@@ -23,19 +23,19 @@ public class MainActivity extends AppCompatActivity {
 
     FloatingActionButton fabAddNew;
 
-    Fragment mfragment;
-    FragmentManager mfragmentManager;
-    AlertDialog.Builder mAlterDialog;
-    TodoViewModel mTodoViewModel;
+    Fragment fragment;
+    FragmentManager fragmentManager;
+    AlertDialog.Builder AlterDialog;
+    TodoViewModel TodoViewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mfragment=new TodoListFragment();
-        mfragmentManager=getSupportFragmentManager();
-        mfragmentManager.beginTransaction()
-                .add(R.id.list_container,mfragment)
+        fragment=new TodoListFragment();
+        fragmentManager=getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .add(R.id.list_container,fragment)
                 .commit();
         fabAddNew = findViewById(R.id.fab_add_new_todo);
 
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
  
-        mTodoViewModel= ViewModelProviders.of(this).get(TodoViewModel.class);
+        TodoViewModel= ViewModelProviders.of(this).get(TodoViewModel.class);
     }
     //for menu options
     @Override
@@ -65,33 +65,33 @@ public class MainActivity extends AppCompatActivity {
         {
             case R.id.menu_delete_all:
                 //confirmation dailog box
-                mAlterDialog = new AlertDialog.Builder(this);
-                mAlterDialog.setMessage("Are you sure want to delete all??")
+                AlterDialog = new AlertDialog.Builder(this);
+                AlterDialog.setMessage("Are you sure want to delete all??")
                         .setCancelable(false)
                         .setTitle(getString(R.string.app_name));
 
-                mAlterDialog.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                AlterDialog.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        mTodoViewModel.deleteAll();
+                        TodoViewModel.deleteAll();
                     }
                 });
-                mAlterDialog.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                AlterDialog.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
                     }
                 });
-                mAlterDialog.show();
+                AlterDialog.show();
             break;
             //for exiting the app
             case R.id.menu_logout:
-                mAlterDialog = new AlertDialog.Builder(this);
-                mAlterDialog.setMessage("Are you sure want to exit?")
+                AlterDialog = new AlertDialog.Builder(this);
+                AlterDialog.setMessage("Are you sure want to exit?")
                         .setCancelable(false)
                         .setTitle(getString(R.string.app_name));
 
-                mAlterDialog.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                AlterDialog.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         SharedPreferences preferences = getApplicationContext().getSharedPreferences("todo_pref", 0);
@@ -100,13 +100,13 @@ public class MainActivity extends AppCompatActivity {
                         finish();
                     }
                 });
-                mAlterDialog.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                AlterDialog.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
                     }
                 });
-                mAlterDialog.show();
+                AlterDialog.show();
                 break;
 
 

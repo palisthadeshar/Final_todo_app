@@ -34,23 +34,16 @@ import java.util.Calendar;
 
 public class EditTodoFragment extends Fragment {
 
+
+    private TodoViewModel todoViewModel;
+    private int todoId;
     //view elements
     View rootView;
     EditText txtTitle, txtDescription, txtDate;
-    RadioGroup rgPriority;
-    RadioButton rbHigh, rbMedium, rbLow, rbSelected;
-    CheckBox chkIsCompleted;
-    Button btnAdd,btnCancel;
-    AlertDialog.Builder mAlterDialog;
-    DatePickerDialog mDatePicker;
+    Button addButton,cancelButton;
+    AlertDialog.Builder alertDialog;
+    DatePickerDialog datePicker;
 
-    public static final int highPriority=1;
-    public static final int mediumPriority=2;
-    public static final int lowPriority=3;
-
-    private TodoViewModel mTodoViewModel;
-
-    private int todoId;
 
 
     @SuppressLint({"ClickableViewAccessibility", "SimpleDateFormat"})
@@ -59,23 +52,19 @@ public class EditTodoFragment extends Fragment {
                              Bundle savedInstanceState) {
 
 
-        // Inflate the layout for this fragment
+        // Inflate the layout for the fragment
         rootView = inflater.inflate(R.layout.fragment_edit_todo, container, false);
-        mTodoViewModel = ViewModelProviders.of(this).get(TodoViewModel.class);
+        todoViewModel = ViewModelProviders.of(this).get(TodoViewModel.class);
         txtTitle = rootView.findViewById(R.id.edit_txt_title);
         txtDescription = rootView.findViewById(R.id.edit_txt_description);
         txtDate = rootView.findViewById(R.id.edit_txt_date);
-        rgPriority = rootView.findViewById(R.id.edit_rg_priority);
-        rbHigh = rootView.findViewById(R.id.edit_rb_high);
-        rbMedium = rootView.findViewById(R.id.edit_rb_medium);
-        rbLow = rootView.findViewById(R.id.edit_rb_low);
-        chkIsCompleted = rootView.findViewById(R.id.edit_chk_iscomplete);
-        btnAdd = rootView.findViewById(R.id.edit_btn_save);
-        btnCancel = rootView.findViewById(R.id.edit_btn_cancel);
+        addButton = rootView.findViewById(R.id.edit_btn_save);
+        cancelButton = rootView.findViewById(R.id.edit_btn_cancel);
         txtDate = rootView.findViewById(R.id.edit_txt_date);
 
+
         //adding click listener on save button for adding new todo
-        btnAdd.setOnClickListener(new View.OnClickListener() {
+        addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AddTodo();
@@ -83,7 +72,7 @@ public class EditTodoFragment extends Fragment {
         });
 
         //adding click listener n cancel button
-        btnCancel.setOnClickListener(new View.OnClickListener() {
+        cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DisplayAlertDialog();
@@ -94,7 +83,7 @@ public class EditTodoFragment extends Fragment {
             public boolean onTouch(View v, MotionEvent event) {
                 if(event.getAction()==MotionEvent.ACTION_DOWN)
                 {
-                    DispalyTodoDate();
+                    DisplayTodoDate();
                 }
 
                 return false;
@@ -103,8 +92,8 @@ public class EditTodoFragment extends Fragment {
         //for updating the todo
         todoId=getActivity().getIntent().getIntExtra("TodoId",-1);
         if (todoId!=-1){
-            btnAdd.setText(getText(R.string.edit_update));
-            Task todo = mTodoViewModel.getTodoById(todoId);
+            addButton.setText(getText(R.string.edit_update));
+            Task todo = todoViewModel.getTodoById(todoId);
             txtTitle.setText(todo.getTitle());
             txtDescription.setText(todo.getDescription());
             DateFormat formatter;
@@ -117,65 +106,63 @@ public class EditTodoFragment extends Fragment {
     }
     //Alert Dailog Box Cancellation
     void DisplayAlertDialog(){
-        mAlterDialog = new AlertDialog.Builder(getContext());
-        mAlterDialog.setMessage(getString(R.string.edit_cancel_promt))
+        alertDialog = new AlertDialog.Builder(getContext());
+        alertDialog.setMessage(getString(R.string.edit_cancel_promt))
                 .setCancelable(false)
                 .setTitle(getString(R.string.app_name));
 
-        mAlterDialog.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+        alertDialog.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent(getActivity(),MainActivity.class);
                 startActivity(intent);
             }
         });
-        mAlterDialog.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+        alertDialog.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
             }
         });
-        mAlterDialog.show();
+        alertDialog.show();
     }
     //For intent displaying calender
-    void DispalyTodoDate(){
+    void DisplayTodoDate(){
         Calendar calendar = Calendar.getInstance();
-        int cDay = calendar.get(Calendar.DAY_OF_MONTH);
-        int cMonth = calendar.get(Calendar.MONTH);
-        int cYear = calendar.get(Calendar.YEAR);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int month = calendar.get(Calendar.MONTH);
+        int year = calendar.get(Calendar.YEAR);
 
-        mDatePicker=new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+        datePicker=new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
             @SuppressLint("SetTextI18n")
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 txtDate.setText(year+"-"+month+"-"+dayOfMonth);
             }
-        },cYear, cMonth, cDay);
-        mDatePicker.show();
+        },year, month, day);
+        datePicker.show();
     }
 
     @SuppressLint({"SimpleDateFormat", "NonConstantResourceId"})
-    //class created for adding todo with details
+        //class created for adding todo with details
     void AddTodo(){
         boolean validate = true;
         Task todo= new Task();
         Date todoDate;
-        int priority = 1;
-        int checkedPriority = -1;
 
-        //For validating the text field so that nothing is empty
+        //textfield validations
         if (txtTitle.getText().toString().trim().equals("")){
-            txtTitle.setError("Title cannot be empty");
+            txtTitle.setError("Please insert title.");
             txtTitle.requestFocus();
             validate = false;
         }
         if (txtDescription.getText().toString().trim().equals("")){
-            txtDescription.setError("Description cannot be empty");
+            txtDescription.setError("Please insert description.");
             txtTitle.requestFocus();
             validate = false;
         }
         if (txtDate.getText().toString().trim().equals("")){
-            txtDate.setError("Date cannot be empty");
+            txtDate.setError("Please pick a date.");
             txtTitle.requestFocus();
             validate = false;
         }
@@ -191,31 +178,20 @@ public class EditTodoFragment extends Fragment {
         catch(ParseException e){
             e.printStackTrace();
         }
-        checkedPriority=rgPriority.getCheckedRadioButtonId();
-        switch (checkedPriority){
-            case R.id.edit_rb_high:
-                priority = highPriority;
-                break;
-            case R.id.edit_rb_medium:
-                priority = mediumPriority;
-                break;
-            case R.id.edit_rb_low:
-                priority = lowPriority;
-                break;
-        }
 
-        //check if it is for updation or adding new todo
+
+        //add todo if the todo is new and update if it already exists
         if (validate){
             if (todoId!= -1){
                 todo.setId(todoId);
-                mTodoViewModel.update(todo);
+                todoViewModel.update(todo);
                 Toast.makeText(getActivity(),getText(R.string.crud_update),Toast.LENGTH_SHORT).show();
             }else{
 
-                mTodoViewModel.insert(todo);
+                todoViewModel.insert(todo);
                 Toast.makeText(getActivity(),getText(R.string.crud_save),Toast.LENGTH_SHORT).show();
             }
-            //After saving or updating return back to main page
+            //After saving or updating return back to main activity
             Intent intent = new Intent(getActivity(),MainActivity.class);
             startActivity(intent);
         }

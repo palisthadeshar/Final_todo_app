@@ -22,11 +22,12 @@
         android:layout_marginEnd="30dp"
         android:layout_marginRight="30dp"
         android:layout_marginBottom="30dp"
-        android:background="#100E0E"
+        android:background="#E9E4E4"
         android:contentDescription="@string/todo"
         android:src="@drawable/ic_addd_todo"
-        app:backgroundTint="#E8DA5E"
+        app:backgroundTint="#4169e1"
         app:backgroundTintMode="add"
+        app:rippleColor="#FFFFFF"
         tools:ignore="RtlHardcoded" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

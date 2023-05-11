@@ -29,14 +29,14 @@ import java.util.List;
 
 public class TodoListFragment extends Fragment {
     View rootView;
-    private TodoViewModel mTodoViewModel;
+    private TodoViewModel TodoViewModel;
     RecyclerView todoRecyclerView;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
      rootView = inflater.inflate(R.layout.fragment_todo_list, container, false);
-        mTodoViewModel = ViewModelProviders.of(this).get(TodoViewModel.class);
+        TodoViewModel = ViewModelProviders.of(this).get(TodoViewModel.class);
         todoRecyclerView = rootView.findViewById(R.id.recyclerview);
         LinearLayoutManager layoutManager= new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -48,7 +48,7 @@ public class TodoListFragment extends Fragment {
 
     //for displaying todo list in main page
     void updateRV(){
-        mTodoViewModel.getAllTodos().observe(this, new Observer<List<Task>>() {
+        TodoViewModel.getAllTodos().observe(this, new Observer<List<Task>>() {
             @Override
             public void onChanged(List<Task> todoList) {
                 TodoAdapter adapter = new TodoAdapter(todoList);
@@ -71,7 +71,7 @@ public class TodoListFragment extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull TodoHolder holder, int position) {
             Task todo = mTodoList.get(position);
-            LinearLayout layout = (LinearLayout)((ViewGroup)holder.mTitle.getParent());
+            LinearLayout layout = (LinearLayout)((ViewGroup)holder.Title.getParent());
                         holder.bind(todo);
         }
         @Override
@@ -87,30 +87,31 @@ public class TodoListFragment extends Fragment {
         }
     }
     private class TodoHolder extends RecyclerView.ViewHolder{
-        TextView mTitle, mDate, mDesprition;
-        Button mDeleteBtn;
+        TextView Title, Date, Desprition;
+        Button DeleteBtn,todoUpdate;
         public TodoHolder(LayoutInflater inflater, ViewGroup parentViewGroup) {
             super(inflater.inflate(R.layout.list_item_todo, parentViewGroup, false));
-            mTitle = itemView.findViewById(R.id.list_title);
-            mDate = itemView.findViewById(R.id.list_date);
-            mDesprition=itemView.findViewById(R.id.list_description);
-            mDeleteBtn = itemView.findViewById(R.id.delete);
+            Title = itemView.findViewById(R.id.list_title);
+            Date = itemView.findViewById(R.id.list_date);
+            Desprition=itemView.findViewById(R.id.list_description);
+            DeleteBtn = itemView.findViewById(R.id.delete);
+            todoUpdate = itemView.findViewById(R.id.update);
 
-            mDeleteBtn.setOnClickListener(new View.OnClickListener() {
+            DeleteBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    TodoAdapter adapter = new TodoAdapter(mTodoViewModel.getAllTodos().getValue());
+                    TodoAdapter adapter = new TodoAdapter(TodoViewModel.getAllTodos().getValue());
                     int position = getAdapterPosition();
                     Task task = adapter.getTodoAt(position);
-                    mTodoViewModel.deleteById(task);
+                    TodoViewModel.deleteById(task);
                 }
             });
 
             //for updating the list while the user clicks the todo
-            mTitle.setOnClickListener(new View.OnClickListener() {
+            todoUpdate.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    TodoAdapter adapter = new TodoAdapter(mTodoViewModel.getAllTodos().getValue());
+                    TodoAdapter adapter = new TodoAdapter(TodoViewModel.getAllTodos().getValue());
                     int position = getAdapterPosition();
                     Task task = adapter.getTodoAt(position);
                     Intent intent = new Intent(getActivity(),EditTodoActivity.class);
@@ -118,10 +119,10 @@ public class TodoListFragment extends Fragment {
                     startActivity(intent);
                 }
             });
-            mDesprition.setOnClickListener(new View.OnClickListener() {
+            Desprition.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    TodoAdapter adapter = new TodoAdapter(mTodoViewModel.getAllTodos().getValue());
+                    TodoAdapter adapter = new TodoAdapter(TodoViewModel.getAllTodos().getValue());
                     int position = getAdapterPosition();
                     Task task = adapter.getTodoAt(position);
                     Intent intent = new Intent(getActivity(),EditTodoActivity.class);
@@ -129,10 +130,10 @@ public class TodoListFragment extends Fragment {
                     startActivity(intent);
                 }
             });
-            mDate.setOnClickListener(new View.OnClickListener() {
+            Date.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    TodoAdapter adapter = new TodoAdapter(mTodoViewModel.getAllTodos().getValue());
+                    TodoAdapter adapter = new TodoAdapter(TodoViewModel.getAllTodos().getValue());
                     int position = getAdapterPosition();
                     Task task = adapter.getTodoAt(position);
                     Intent intent = new Intent(getActivity(),EditTodoActivity.class);
@@ -145,9 +146,9 @@ public class TodoListFragment extends Fragment {
         public void bind(Task todo){
             @SuppressLint("SimpleDateFormat")
             SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
-            mTitle.setText(todo.getTitle());
-            mDesprition.setText(todo.getDescription());
-            mDate.setText(dateFormatter.format(todo.getCreatedDate()));
+            Title.setText(todo.getTitle());
+            Desprition.setText(todo.getDescription());
+            Date.setText(dateFormatter.format(todo.getCreatedDate()));
         }
 
     }

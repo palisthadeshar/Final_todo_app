@@ -8,17 +8,17 @@ import android.os.Bundle;
 
 public class EditTodoActivity extends AppCompatActivity {
 
-    Fragment mFragment;
-    FragmentManager mFragmentManager;
+    Fragment frag;
+    FragmentManager frag_manager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_todo);
 
-        mFragment=new EditTodoFragment();
-        mFragmentManager=getSupportFragmentManager();
-        mFragmentManager.beginTransaction()
-                .add(R.id.main_container,mFragment)
+        frag=new EditTodoFragment();
+        frag_manager=getSupportFragmentManager();
+        frag_manager.beginTransaction()
+                .add(R.id.main_container,frag)
                 .commit();
     }
 }
